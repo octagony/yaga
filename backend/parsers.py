@@ -25,7 +25,15 @@ app.add_middleware(
 )
 
 def parse_plati(playwright, query: str):
-    browser = playwright.chromium.launch(headless=HEADLESS_MODE)
+    browser = playwright.chromium.launch(
+    headless=HEADLESS_MODE,
+    args=[
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-gpu'
+    ]
+    )
     context = browser.new_context(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
     page = context.new_page()
     search_url = f"https://plati.market/search/{query.replace(' ', '+')}"
@@ -65,7 +73,15 @@ def parse_plati(playwright, query: str):
         browser.close()
 
 def parse_playerok(playwright, query: str):
-    browser = playwright.chromium.launch(headless=HEADLESS_MODE)
+    browser = playwright.chromium.launch(
+    headless=HEADLESS_MODE,
+    args=[
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-gpu'
+    ]
+    )
     context = browser.new_context(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
     page = context.new_page()
     
@@ -182,11 +198,8 @@ def parse_ggsel(query: str):
         print(f"   ✅ Успешно найдено {len(results)} товаров на Ggsel.net")
         return results
         
-    except requests.RequestException as e:
-        print(f"❌ Ошибка сети при запросе к Ggsel.net: {e}")
-        return []
     except Exception as e:
-        print(f"❌ Ошибка парсинга Ggsel.net: {e}")
+        print(f"❌ Ошибка при запросе к Ggsel.net: {e}")
         return []
 
 def group_all_items(all_items, threshold=FUZZY_THRESHOLD):
